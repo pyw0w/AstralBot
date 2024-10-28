@@ -12,7 +12,8 @@ type Config struct {
 	DiscordToken    string
 	DebugMode       bool
 	CommandPrefix   string
-	DetailedAPILogs bool // Добавляем новую опцию
+	DetailedAPILogs bool
+	SteamAPIKey     string // Добавлено новое поле для API ключа Steam
 }
 
 func LoadConfig() *Config {
@@ -27,5 +28,6 @@ func LoadConfig() *Config {
 		DebugMode:       os.Getenv("DEBUG_MODE") == "true",
 		CommandPrefix:   os.Getenv("COMMAND_PREFIX"),
 		DetailedAPILogs: os.Getenv("DETAILED_API_LOGS") == "true",
+		SteamAPIKey:     os.Getenv("STEAM_API_KEY"), // Загрузка API ключа
 	}
 }

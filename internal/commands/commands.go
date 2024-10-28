@@ -35,5 +35,5 @@ func RegisterCommands(cmdHandler *CommandHandler, logger *utils.Logger, debug bo
 	RegisterPingCommand(cmdHandler)
 	RegisterHelpCommand(cmdHandler)
 	RegisterTestCommand(cmdHandler)
-	RegisterFetchCommand(cmdHandler)
+	RegisterSteamInfoCommand(cmdHandler) // Добавлено
 }
