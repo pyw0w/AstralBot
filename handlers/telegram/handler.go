@@ -39,7 +39,7 @@ func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, l
 	}
 
 	if debug {
-		logger.Debug("Telegram", "Бот инициализирован как:", bot.Self.UserName)
+		logger.Debug("Telegram", "Бот инициализирован как: ", bot.Self.UserName)
 	}
 
 	return handler, nil

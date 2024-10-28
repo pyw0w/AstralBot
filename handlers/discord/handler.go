@@ -91,7 +91,7 @@ func (h *Handler) Start() error {
 	}
 
 	if h.Debug {
-		h.Logger.Debug("Discord", "Бот инициализирован как:", h.Session.State.User.Username)
+		h.Logger.Debug("Discord", "Бот инициализирован как: ", h.Session.State.User.Username)
 	}
 
 	return nil
