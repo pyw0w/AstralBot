@@ -58,14 +58,6 @@ AstralBot - это бот, который поддерживает Telegram и D
 
 ## Запуск
 
-### Для Linux/MacOS
-
-   Запустите:
-
-   ```bash
-   ./run.bat
-   ```
-
 ### Для Windows
 
    Запустите:
