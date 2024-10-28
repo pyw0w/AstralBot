@@ -21,4 +21,8 @@ GOOS=linux GOARCH=arm64 go build -o bin/AstralBot_linux_arm64
 GOOS=darwin GOARCH=amd64 go build -o bin/AstralBot_mac_x64
 GOOS=darwin GOARCH=arm64 go build -o bin/AstralBot_mac_arm64
 
+# Создание ZIP-архива для релиза
+echo "Создание ZIP-архива для релиза..."
+zip -r bin/AstralBot_release.zip bin/*
+
 echo "Done!"
