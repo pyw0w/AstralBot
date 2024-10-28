@@ -13,10 +13,10 @@ import (
 )
 
 type Handler struct {
-	session        *discordgo.Session
-	commandHandler *commands.CommandHandler
-	debug          bool
-	logger         *utils.Logger
+	Session        *discordgo.Session
+	CommandHandler *commands.CommandHandler
+	Debug          bool
+	Logger         *utils.Logger
 }
 
 func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, logger *utils.Logger, detailedLogs bool) (*Handler, error) {
@@ -53,10 +53,10 @@ func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, l
 	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 
 	handler := &Handler{
-		session:        session,
-		commandHandler: cmdHandler,
-		debug:          debug,
-		logger:         logger,
+		Session:        session,
+		CommandHandler: cmdHandler,
+		Debug:          debug,
+		Logger:         logger,
 	}
 
 	return handler, nil
@@ -83,15 +83,15 @@ func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 }
 
 func (h *Handler) Start() error {
-	h.session.AddHandler(h.messageCreate)
+	h.Session.AddHandler(h.messageCreate)
 
-	err := h.session.Open()
+	err := h.Session.Open()
 	if err != nil {
 		return err
 	}
 
-	if h.debug {
-		h.logger.Debug("Discord", "Бот инициализирован как:", h.session.State.User.Username)
+	if h.Debug {
+		h.Logger.Debug("Discord", "Бот инициализирован как:", h.Session.State.User.Username)
 	}
 
 	return nil
@@ -111,10 +111,10 @@ func (h *Handler) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate
 	cmd := args[0]
 	args = args[1:]
 
-	if h.debug {
-		h.logger.Debug("Discord", " Команда: ", cmd, "Аргументы: ", args)
+	if h.Debug {
+		h.Logger.Debug("Discord", " Команда: ", cmd, "Аргументы: ", args)
 	}
 
-	response, _ := h.commandHandler.ExecuteCommand(cmd, args)
+	response, _ := h.CommandHandler.ExecuteCommand(cmd, args)
 	s.ChannelMessageSend(m.ChannelID, response)
 }

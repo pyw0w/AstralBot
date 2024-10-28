@@ -19,19 +19,13 @@ func main() {
 	// Инициализация обработчика команд
 	cmdHandler := commands.NewCommandHandler()
 
-	// Регистрация команд
-	cmdHandler.RegisterCommand(commands.Command{
-		Name:        "ping",
-		Description: "Проверка работоспособности бота",
-		Execute: func(args []string) (string, error) {
-			return "Pong!", nil
-		},
-	})
+	// Инициализация команд
+	commands.RegisterCommands(cmdHandler, logger, cfg.DebugMode) // Передаем логгер и флаг дебага
 
 	// Инициализация обработчиков для разных платформ
 	tgHandler, err := telegram.NewHandler(cfg.TelegramToken, cmdHandler, cfg.DebugMode, logger)
 	if err != nil {
-		logger.Error("System", "Ошибка инициализации Telegram:", err)
+		logger.Error("System", "Ошибка инициализации Telegram: ", err)
 		return
 	}
 
@@ -43,7 +37,7 @@ func main() {
 		cfg.DetailedAPILogs,
 	)
 	if err != nil {
-		logger.Error("System", "Ошибка инициализации Discord:", err)
+		logger.Error("System", "Ошибка инициализации Discord: ", err)
 		return
 	}
 
@@ -57,6 +51,11 @@ func main() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
 	<-sc
+
+	// Отключение Discord бота
+	if err := discordHandler.Session.Close(); err != nil {
+		logger.Error("System", "Ошибка при отключении Discord:", err)
+	}
 
 	logger.Info("Завершение работы бота...")
 }

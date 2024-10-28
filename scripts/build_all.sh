@@ -1,8 +1,11 @@
 #!/bin/bash
+set -e  # Остановить выполнение при ошибке
 echo "Building for all platforms..."
 
 # Создаем директорию для бинарных файлов если её нет
-mkdir -p bin
+if [ ! -d "bin" ]; then
+    mkdir -p bin
+fi
 
 # Windows
 GOOS=windows GOARCH=386 go build -o bin/AstralBot_windows_x86.exe

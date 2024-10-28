@@ -1,5 +1,7 @@
 package commands
 
+import "AstralBot/utils"
+
 type Command struct {
 	Name        string
 	Description string
@@ -25,4 +27,13 @@ func (h *CommandHandler) ExecuteCommand(name string, args []string) (string, err
 		return cmd.Execute(args)
 	}
 	return "❌ Неверная команда", nil
+}
+
+// Функция для регистрации всех команд
+func RegisterCommands(cmdHandler *CommandHandler, logger *utils.Logger, debug bool) {
+	// Инициализация команд
+	RegisterPingCommand(cmdHandler)
+	RegisterHelpCommand(cmdHandler)
+	RegisterTestCommand(cmdHandler)
+	RegisterFetchCommand(cmdHandler)
 }
