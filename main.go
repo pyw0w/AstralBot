@@ -1,32 +1,29 @@
 package main
 
 import (
-	"os"
-	"os/signal"
-	"syscall"
-	"unsafe"
-
 	"AstralBot/config"
 	"AstralBot/handlers/discord"
 	"AstralBot/handlers/telegram"
-	"AstralBot/internal" // Импортируем пакет для доступа к версии
 	"AstralBot/internal/commands"
 	"AstralBot/utils"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 // SetConsoleTitle устанавливает заголовок окна консоли
-func SetConsoleTitle(title string) {
-	kernel32 := syscall.NewLazyDLL("kernel32.dll")
-	setConsoleTitle := kernel32.NewProc("SetConsoleTitleW")
-	_, _, _ = setConsoleTitle.Call(uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(title))))
-}
+//func SetConsoleTitle(title string) {
+//	kernel32 := syscall.NewLazyDLL("kernel32.dll")
+//	setConsoleTitle := kernel32.NewProc("SetConsoleTitleW")
+//	_, _, _ = setConsoleTitle.Call(uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(title))))
+//}
 
 func main() {
 	cfg := config.LoadConfig()
 	logger := utils.NewLogger(cfg.DebugMode)
 
 	// Устанавливаем заголовок консоли
-	SetConsoleTitle("AstralBot - Версия: " + internal.Version)
+	//SetConsoleTitle("AstralBot - Версия: " + internal.Version)
 
 	// Инициализация обработчика команд
 	cmdHandler := commands.NewCommandHandler()
