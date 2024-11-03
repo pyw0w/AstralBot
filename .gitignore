@@ -31,10 +31,6 @@
 tmp/
 temp/
 
-# Go специфичные файлы
-go.work
-go.sum
-
 # Файлы покрытия тестами
 coverage.txt
 coverage.html
