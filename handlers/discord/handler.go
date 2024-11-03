@@ -9,6 +9,8 @@ import (
 
 	"AstralBot/utils"
 
+	"AstralBot/handlers/discord/events"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -101,6 +103,9 @@ func (h *Handler) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate
 	if m.Author.Bot {
 		return
 	}
+
+	// Логируем сообщение
+	events.LogMessage(s, m)
 
 	if !strings.HasPrefix(m.Content, "!") {
 		return

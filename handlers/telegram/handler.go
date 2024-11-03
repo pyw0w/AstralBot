@@ -1,6 +1,7 @@
 package telegram
 
 import (
+	"AstralBot/handlers/telegram/events"
 	"AstralBot/internal/commands"
 	"AstralBot/utils"
 	"log"
@@ -66,6 +67,9 @@ func (h *Handler) handleCommand(update tgbotapi.Update) {
 	if update.Message.From.IsBot {
 		return
 	}
+
+	// Логируем сообщение
+	events.LogMessage(update)
 
 	cmd := update.Message.Command()
 	args := strings.Split(update.Message.Text, " ")[1:]
