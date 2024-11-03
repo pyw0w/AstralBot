@@ -1,5 +1,5 @@
 @echo off
-chcp 65001 >nul
+chip 65001 >nul
 echo Запуск бота AstralBot...
 
 :: Сборка проекта
@@ -7,7 +7,7 @@ echo Сборка проекта AstralBot...
 SET GOOS=windows
 SET GOARCH=amd64
 go build -o bin\AstralBot_windows_x64.exe
-IF ERRORLEVEL 1 (
+IF ERROR LEVEL 1 (
     echo Ошибка при сборке проекта. Пожалуйста, проверьте код.
     exit /b 1
 )
