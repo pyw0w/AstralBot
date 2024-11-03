@@ -35,10 +35,10 @@ jobs:
       run: go mod tidy
 
     - name: Make build script executable
-      run: chmod +x scripts/build.sh
+      run: chmod +x scripts/build_all.sh
 
     - name: Build
-      run: scripts/build_linux.sh
+      run: scripts/build_all.sh
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
