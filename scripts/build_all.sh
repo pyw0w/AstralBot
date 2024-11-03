@@ -21,17 +21,16 @@ build_and_zip() {
     local os=$1
     local arch=$2
     local output_name=$3
-    local dir_name="bin/${output_name}"
     local zip_name="bin/${output_name}.zip"
+
+    # Создаем временную директорию для этой сборки
+    local dir_name="bin/${output_name}_dir"
+    mkdir -p "$dir_name"
 
     # Устанавливаем переменные среды для сборки и создаем бинарный файл
     GOOS=$os GOARCH=$arch go build -o "${dir_name}/${output_name}"
 
-    # Создаем директорию для этой сборки
-    mkdir -p "$dir_name"
-
-    # Копируем бинарный файл и .env.example в эту директорию
-    cp "${dir_name}/${output_name}" "$dir_name"
+    # Копируем .env.example в эту директорию
     cp "$ENV_FILE" "$dir_name"
 
     # Создаем архив
