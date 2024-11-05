@@ -47,14 +47,29 @@ jobs:
     - name: Install dependencies
       run: go mod tidy
 
-    - name: Build
+    - name: Build (Unix)
+      if: runner.os != 'Windows'
       run: |
         mkdir -p bin/${{ matrix.goos }}-${{ matrix.arch }}
         GOOS=${{ matrix.goos }} GOARCH=${{ matrix.arch }} go build -o bin/${{ matrix.goos }}-${{ matrix.arch }}/AstralBot
 
-    - name: Zip build artifacts
+    - name: Build (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        mkdir -p bin\${{ matrix.goos }}-${{ matrix.arch }}
+        set GOOS=${{ matrix.goos }}
+        set GOARCH=${{ matrix.arch }}
+        go build -o bin\${{ matrix.goos }}-${{ matrix.arch }}\AstralBot.exe
+
+    - name: Zip build artifacts (Unix)
+      if: runner.os != 'Windows'
       run: |
         zip -r bin/${{ matrix.goos }}-${{ matrix.arch }}/AstralBot.zip bin/${{ matrix.goos }}-${{ matrix.arch }}/AstralBot
+
+    - name: Zip build artifacts (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        powershell Compress-Archive -Path bin\${{ matrix.goos }}-${{ matrix.arch }}\AstralBot.exe -DestinationPath bin\${{ matrix.goos }}-${{ matrix.arch }}\AstralBot.zip
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
