@@ -3,7 +3,7 @@ set -e  # Остановить выполнение при ошибке
 echo "Building for all platforms..."
 
 # Путь к файлу .env.example
-ENV_FILE=".env.example"
+ENV_FILE="../.env.example"
 
 # Проверка на наличие файла .env.example
 if [ ! -f "$ENV_FILE" ]; then
