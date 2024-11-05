@@ -47,6 +47,12 @@ jobs:
     - name: Install dependencies
       run: go mod tidy
 
+    - name: Extract version
+      id: extract_version
+      run: |
+        VERSION=$(grep -oP 'const Version = "\K[^"]+' internal/version.go)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
     - name: Build (Unix)
       if: runner.os != 'Windows'
       run: |
