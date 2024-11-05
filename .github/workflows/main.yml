@@ -17,6 +17,13 @@ jobs:
         go-version: [1.23.2]
         os: [ubuntu-latest, windows-latest, macos-latest]
         arch: [amd64, arm64]
+        include:
+          - os: ubuntu-latest
+            goos: linux
+          - os: windows-latest
+            goos: windows
+          - os: macos-latest
+            goos: darwin
 
     steps:
     - name: Checkout code
@@ -42,15 +49,15 @@ jobs:
 
     - name: Build
       run: |
-        mkdir -p bin/${{ matrix.os }}-${{ matrix.arch }}
-        GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -o bin/${{ matrix.os }}-${{ matrix.arch }}/AstralBot
+        mkdir -p bin/${{ matrix.goos }}-${{ matrix.arch }}
+        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.arch }} go build -o bin/${{ matrix.goos }}-${{ matrix.arch }}/AstralBot
 
     - name: Zip build artifacts
       run: |
-        zip -r bin/${{ matrix.os }}-${{ matrix.arch }}/AstralBot.zip bin/${{ matrix.os }}-${{ matrix.arch }}/AstralBot
+        zip -r bin/${{ matrix.goos }}-${{ matrix.arch }}/AstralBot.zip bin/${{ matrix.goos }}-${{ matrix.arch }}/AstralBot
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: AstralBot-${{ matrix.os }}-${{ matrix.arch }}
-        path: bin/${{ matrix.os }}-${{ matrix.arch }}/AstralBot.zip
+        name: AstralBot-${{ matrix.goos }}-${{ matrix.arch }}
+        path: bin/${{ matrix.goos }}-${{ matrix.arch }}/AstralBot.zip
