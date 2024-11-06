@@ -40,7 +40,7 @@ func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, l
 	}
 
 	if debug {
-		logger.Debug("Telegram", "Бот инициализирован как: ", bot.Self.UserName)
+		logger.Debug("Telegram", "Бот инициализирован как: " + bot.Self.UserName)
 	}
 
 	return handler, nil
@@ -75,7 +75,7 @@ func (h *Handler) handleCommand(update tgbotapi.Update) {
 	args := strings.Split(update.Message.Text, " ")[1:]
 
 	if h.debug {
-		h.logger.Debug("Telegram", " Команда: ", cmd, " Аргументы:", args)
+		h.logger.Debug("Telegram", "Команда: " + cmd + " Аргументы: " + strings.Join(args, " "))
 	}
 
 	response, _ := h.commandHandler.ExecuteCommand(cmd, args)

@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 type Logger struct {
@@ -19,7 +20,10 @@ type LoggerAdapter struct {
 }
 
 func (l *LoggerAdapter) Write(p []byte) (n int, err error) {
-	l.logger.Debug(l.source, string(p))
+	// Удаляем лишние символы новой строки
+	message := string(p)
+	message = strings.TrimSuffix(message, "\n")
+	l.logger.Debug(l.source, message)
 	return len(p), nil
 }
 
@@ -48,10 +52,8 @@ func NewLogger(debugMode bool) *Logger {
 	return logger
 }
 
-func (l *Logger) Debug(source string, v ...interface{}) {
-	// Форматируем сообщение без лишних пробелов
-	msg := fmt.Sprintf("[%s]%s", source, fmt.Sprint(v...))
-	l.debug.Println(msg)
+func (l *Logger) Debug(source, message string) {
+	l.debug.Printf("[%s] %s", source, message)
 }
 
 func (l *Logger) Info(source string, v ...interface{}) {

@@ -93,7 +93,7 @@ func (h *Handler) Start() error {
 	}
 
 	if h.Debug {
-		h.Logger.Debug("Discord", "Бот инициализирован как: ", h.Session.State.User.Username)
+		h.Logger.Debug("Discord", "Бот инициализирован как: "+h.Session.State.User.Username)
 	}
 
 	return nil
@@ -106,6 +106,7 @@ func (h *Handler) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate
 
 	// Логируем сообщение
 	events.LogMessage(s, m)
+	events.OnReady(s, &s.State.Ready)
 
 	if !strings.HasPrefix(m.Content, "!") {
 		return
@@ -117,7 +118,7 @@ func (h *Handler) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate
 	args = args[1:]
 
 	if h.Debug {
-		h.Logger.Debug("Discord", " Команда: ", cmd, "Аргументы: ", args)
+		h.Logger.Debug("Discord", fmt.Sprintf("Команда: %s Аргументы: %v", cmd, args))
 	}
 
 	response, _ := h.CommandHandler.ExecuteCommand(cmd, args)
