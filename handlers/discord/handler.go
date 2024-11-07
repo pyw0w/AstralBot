@@ -6,9 +6,7 @@ import (
 	"strings"
 
 	"AstralBot/internal/commands"
-
 	"AstralBot/utils"
-
 	"AstralBot/handlers/discord/events"
 
 	"github.com/bwmarrin/discordgo"
