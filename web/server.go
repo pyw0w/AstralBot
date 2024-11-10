@@ -2,6 +2,7 @@ package web
 
 import (
 	"AstralBot/config"
+	"AstralBot/internal/api"
 	"AstralBot/internal/logger"
 	"fmt"
 	"net/http"
@@ -20,14 +21,16 @@ func NewServer(cfg *config.Config, logger *logger.Logger) *Server {
 }
 
 func (s *Server) Start() {
-	http.HandleFunc("/", s.handleRoot)
+	// Обслуживание статических файлов из каталога www
+	fs := http.FileServer(http.Dir("./www"))
+	http.Handle("/", fs)
+
+	// Регистрация API эндпоинтов
+	http.HandleFunc("/api/hello", api.HelloHandler)
+
 	addr := fmt.Sprintf(":%d", s.config.WebPort)
 	s.logger.Info("AstralWeb", fmt.Sprintf("Starting web server on %s", addr))
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		s.logger.Error("Could not start web server: %v", err)
 	}
-}
-
-func (s *Server) handleRoot(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Welcome to AstralBot Web Interface")
 }
