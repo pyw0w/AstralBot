@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strings"
 
-	"AstralBot/internal/commands"
-	"AstralBot/utils"
 	"AstralBot/handlers/discord/events"
+	"AstralBot/internal/commands"
+	"AstralBot/internal/logger"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -16,10 +16,10 @@ type Handler struct {
 	Session        *discordgo.Session
 	CommandHandler *commands.CommandHandler
 	Debug          bool
-	Logger         *utils.Logger
+	Logger         *logger.Logger
 }
 
-func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, logger *utils.Logger, detailedLogs bool) (*Handler, error) {
+func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, logger *logger.Logger, detailedLogs bool) (*Handler, error) {
 	// Перехватываем логи библиотеки до создания сессии
 	discordgo.Logger = func(msgL, caller int, format string, a ...interface{}) {
 		if !detailedLogs {
@@ -65,7 +65,7 @@ func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, l
 // Структура для перехвата HTTP запросов
 type loggingTransport struct {
 	underlying http.RoundTripper
-	logger     *utils.Logger
+	logger     *logger.Logger
 }
 
 func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) {

@@ -6,6 +6,7 @@ import (
 	"AstralBot/handlers/telegram"
 	"AstralBot/internal"
 	"AstralBot/internal/commands"
+	"AstralBot/internal/logger"
 	"AstralBot/utils"
 	"log"
 	"os"
@@ -15,7 +16,7 @@ import (
 
 func main() {
 	cfg := config.LoadConfig()
-	logger := utils.NewLogger(cfg.DebugMode)
+	logger := logger.NewLogger(cfg.DebugMode)
 
 	// Устанавливаем заголовок консоли
 	//SetConsoleTitle("AstralBot - Версия: " + internal.Version)

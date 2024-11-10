@@ -3,7 +3,7 @@ package telegram
 import (
 	"AstralBot/handlers/telegram/events"
 	"AstralBot/internal/commands"
-	"AstralBot/utils"
+	"AstralBot/internal/logger"
 	"log"
 	"strings"
 
@@ -14,10 +14,10 @@ type Handler struct {
 	bot            *tgbotapi.BotAPI
 	commandHandler *commands.CommandHandler
 	debug          bool
-	logger         *utils.Logger
+	logger         *logger.Logger
 }
 
-func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, logger *utils.Logger) (*Handler, error) {
+func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, logger *logger.Logger) (*Handler, error) {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, l
 	}
 
 	if debug {
-		logger.Debug("Telegram", "Бот инициализирован как: " + bot.Self.UserName)
+		logger.Debug("Telegram", "Бот инициализирован как: "+bot.Self.UserName)
 	}
 
 	return handler, nil
@@ -75,7 +75,7 @@ func (h *Handler) handleCommand(update tgbotapi.Update) {
 	args := strings.Split(update.Message.Text, " ")[1:]
 
 	if h.debug {
-		h.logger.Debug("Telegram", "Команда: " + cmd + " Аргументы: " + strings.Join(args, " "))
+		h.logger.Debug("Telegram", "Команда: "+cmd+" Аргументы: "+strings.Join(args, " "))
 	}
 
 	response, _ := h.commandHandler.ExecuteCommand(cmd, args)
