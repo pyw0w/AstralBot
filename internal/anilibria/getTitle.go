@@ -1,16 +1,26 @@
 package anilibria
 
 import (
-	"AstralBot/internal/httpclient"
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-func GetRandom() (string, error) {
-	client := httpclient.NewClient()
+func GetTitle(params map[string]string) (string, error) {
+	client := &http.Client{}
 
-	resp, err := client.Get("https://api.anilibria.tv/v3/title/random")
+	req, err := http.NewRequest("GET", "https://api.anilibria.tv/v3/title", nil)
+	if err != nil {
+		return "", fmt.Errorf("ошибка создания запроса: %w", err)
+	}
+
+	q := req.URL.Query()
+	for key, value := range params {
+		q.Add(key, value)
+	}
+	req.URL.RawQuery = q.Encode()
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("ошибка выполнения запроса: %w", err)
 	}

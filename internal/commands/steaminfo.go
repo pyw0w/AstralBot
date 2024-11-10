@@ -23,6 +23,12 @@ func RegisterSteamInfoCommand(cmdHandler *CommandHandler) {
 				steamID = strings.TrimSuffix(steamID, "/")
 			}
 
+			// Проверка, является ли steamID URL профиля и извлечение ID
+			if strings.HasPrefix(steamID, "https://steamcommunity.com/profiles/") {
+				steamID = strings.TrimPrefix(steamID, "https://steamcommunity.com/profiles/")
+				steamID = strings.TrimSuffix(steamID, "/")
+			}
+
 			// Проверка, является ли steamID буквенной формой и преобразование в цифровую
 			if len(steamID) <= 17 { // Пример длины буквенного SteamID
 				var err error

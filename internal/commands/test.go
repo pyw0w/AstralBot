@@ -14,7 +14,7 @@ func RegisterTestCommand(cmdHandler *CommandHandler) {
 				return "❌", nil
 			}
 
-			fmt.Print(anilibria.GetTitle())
+			fmt.Print(anilibria.GetTitle(map[string]string{"id": args[0]}))
 			return "Test!" + args[0], nil
 		},
 	}
