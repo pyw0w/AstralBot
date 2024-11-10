@@ -51,10 +51,9 @@ func NewLogger(debugMode bool) *Logger {
 	}
 
 	logger := &Logger{
-		// Убираем лишние отступы в префиксах
-		debug: log.New(debugOutput, Blue+"DEBUG:"+Reset, log.Ldate|log.Ltime),
-		info:  log.New(os.Stdout, Green+"INFO:"+Reset, log.Ldate|log.Ltime),
-		error: log.New(os.Stderr, Red+"ERROR:"+Reset, log.Ldate|log.Ltime),
+		debug: log.New(debugOutput, Blue+"DEBUG: "+Reset, log.Ldate|log.Ltime),
+		info:  log.New(os.Stdout, Green+"INFO: "+Reset, log.Ldate|log.Ltime),
+		error: log.New(os.Stderr, Red+"ERROR: "+Reset, log.Ldate|log.Ltime),
 	}
 
 	return logger
@@ -65,11 +64,11 @@ func (l *Logger) Debug(source, message string) {
 }
 
 func (l *Logger) Info(source string, v ...interface{}) {
-	msg := fmt.Sprintf("[%s]%s", source, fmt.Sprint(v...))
+	msg := fmt.Sprintf("[%s] %s", source, fmt.Sprint(v...))
 	l.info.Println(msg)
 }
 
 func (l *Logger) Error(source string, v ...interface{}) {
-	msg := fmt.Sprintf("[%s]%s", source, fmt.Sprint(v...))
+	msg := fmt.Sprintf("[%s] %s", source, fmt.Sprint(v...))
 	l.error.Println(msg)
 }

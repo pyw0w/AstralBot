@@ -74,10 +74,6 @@ func (h *Handler) handleCommand(update tgbotapi.Update) {
 	cmd := update.Message.Command()
 	args := strings.Split(update.Message.Text, " ")[1:]
 
-	if h.debug {
-		h.logger.Debug("Telegram", "Команда: "+cmd+" Аргументы: "+strings.Join(args, " "))
-	}
-
 	response, _ := h.commandHandler.ExecuteCommand(cmd, args)
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, response)
 	h.bot.Send(msg)

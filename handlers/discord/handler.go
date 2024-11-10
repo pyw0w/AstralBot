@@ -115,10 +115,6 @@ func (h *Handler) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate
 	cmd := args[0]
 	args = args[1:]
 
-	if h.Debug {
-		h.Logger.Debug("Discord", fmt.Sprintf("Команда: %s Аргументы: %v", cmd, args))
-	}
-
 	response, _ := h.CommandHandler.ExecuteCommand(cmd, args)
 	s.ChannelMessageSend(m.ChannelID, response)
 }
