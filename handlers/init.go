@@ -6,6 +6,7 @@ import (
 	"AstralBot/handlers/telegram"
 	"AstralBot/internal/commands"
 	"AstralBot/internal/logger"
+	"AstralBot/web"
 	"os"
 )
 
@@ -31,8 +32,14 @@ func InitializeHandlers(cfg *config.Config, cmdHandler *commands.CommandHandler,
 	return tgHandler, discordHandler
 }
 
-func StartHandlers(tgHandler *telegram.Handler, discordHandler *discord.Handler, log *logger.Logger) {
+func InitializeWebServer(cfg *config.Config, log *logger.Logger) *web.Server {
+	webServer := web.NewServer(cfg, log)
+	return webServer
+}
+
+func StartHandlers(tgHandler *telegram.Handler, discordHandler *discord.Handler, webServer *web.Server, log *logger.Logger) {
 	go tgHandler.Start()
 	go discordHandler.Start()
+	go webServer.Start()
 	log.Info("AstralBot", "Бот запущен. Нажмите Ctrl+C для завершения")
 }

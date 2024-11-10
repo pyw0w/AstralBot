@@ -14,6 +14,7 @@ type Config struct {
 	CommandPrefix   string
 	DetailedAPILogs bool
 	SteamAPIKey     string // Добавлено новое поле для API ключа Steam
+	WebPort         int
 }
 
 func LoadConfig() *Config {
@@ -29,5 +30,6 @@ func LoadConfig() *Config {
 		CommandPrefix:   os.Getenv("COMMAND_PREFIX"),
 		DetailedAPILogs: os.Getenv("DETAILED_API_LOGS") == "true",
 		SteamAPIKey:     os.Getenv("STEAM_API_KEY"), // Загрузка API ключа
+		WebPort:         8080,                       // Установите порт по умолчанию для веб-сервера
 	}
 }
