@@ -47,14 +47,6 @@ func (s *Server) Start() {
 		})
 	})
 
-	// Регистрация маршрута для страницы "About"
-	r.GET("/about", func(c *gin.Context) {
-		c.HTML(200, "base.html", gin.H{
-			"Title":   "About Astral Bot",
-			"Content": "about.html",
-		})
-	})
-
 	// Регистрация API эндпоинтов
 	r.GET("/api/hello", func(c *gin.Context) {
 		api.HelloHandler(c.Writer, c.Request)
