@@ -5,9 +5,13 @@ import (
 	"AstralBot/handlers/discord"
 	"AstralBot/handlers/telegram"
 	"AstralBot/internal/commands"
+	"AstralBot/internal/database"
+	"AstralBot/internal/database/models"
 	"AstralBot/internal/logger"
 	"AstralBot/web"
 	"os"
+
+	"gorm.io/gorm"
 )
 
 func InitializeCommandHandler(log *logger.Logger, debugMode bool) *commands.CommandHandler {
@@ -35,6 +39,27 @@ func InitializeHandlers(cfg *config.Config, cmdHandler *commands.CommandHandler,
 func InitializeWebServer(cfg *config.Config, log *logger.Logger) *web.Server {
 	webServer := web.NewServer(cfg, log)
 	return webServer
+}
+
+func InitDB(cfg *config.Config, log *logger.Logger) {
+	db, err := database.NewDatabase(cfg.DBType, cfg.DBConnectionString)
+	if err != nil {
+		log.Error("AstralBot", "Ошибка инициализации базы данных: ", err)
+	}
+
+	err = db.Connect()
+	if err != nil {
+		log.Error("AstralBot", "Ошибка подключения к базе данных: ", err)
+	}
+
+	if cfg.DBType != "mongodb" {
+		sqlDB := db.GetDB().(*gorm.DB)
+		sqlDB.AutoMigrate(&models.User{})
+	}
+	if cfg.DBType == "sqlite" {
+		sqlDB := db.GetDB().(*gorm.DB)
+		sqlDB.AutoMigrate(&models.User{})
+	}
 }
 
 func StartHandlers(tgHandler *telegram.Handler, discordHandler *discord.Handler, webServer *web.Server, log *logger.Logger) {
