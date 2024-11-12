@@ -69,7 +69,7 @@ func (h *Handler) handleCommand(update tgbotapi.Update) {
 	}
 
 	// Логируем сообщение
-	events.LogMessage(update)
+	events.LogMessage(update, h.logger)
 
 	cmd := update.Message.Command()
 	args := strings.Split(update.Message.Text, " ")[1:]

@@ -1,7 +1,7 @@
 package events
 
 import (
-	"fmt"
+	"AstralBot/internal/logger"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -15,11 +15,11 @@ type MessageEvent struct {
 }
 
 // LogMessage логирует событие сообщения
-func LogMessage(update tgbotapi.Update) {
+func LogMessage(update tgbotapi.Update, l *logger.Logger) {
 	event := MessageEvent{
 		Username: update.Message.From.UserName,
 		Content:  update.Message.Text,
-		Time:     time.Now(),
 	}
-	fmt.Printf("Message from %s: %s | Time: %s\n", event.Username, event.Content, event.Time.Format(time.RFC3339))
+
+	l.Info("Telegram-Event", "Команда: "+event.Content+" | "+event.Username)
 }

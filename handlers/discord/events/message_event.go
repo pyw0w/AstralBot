@@ -1,8 +1,7 @@
 package events
 
 import (
-	"fmt"
-	"time"
+	"AstralBot/internal/logger"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -11,15 +10,13 @@ import (
 type MessageEvent struct {
 	Username string
 	Content  string
-	Time     time.Time
 }
 
 // LogMessage логирует событие сообщения
-func LogMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+func LogMessage(s *discordgo.Session, m *discordgo.MessageCreate, l *logger.Logger) {
 	event := MessageEvent{
 		Username: m.Author.Username,
 		Content:  m.Content,
-		Time:     time.Now(),
 	}
-	fmt.Printf("Message from %s: %s | Time: %s\n", event.Username, event.Content, event.Time.Format(time.RFC3339))
+	l.Info("Discord-Event", "Команда: "+event.Content+" | "+event.Username)
 }

@@ -103,7 +103,7 @@ func (h *Handler) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate
 	}
 
 	// Логируем сообщение
-	events.LogMessage(s, m)
+	events.LogMessage(s, m, h.Logger)
 	events.OnReady(s, &s.State.Ready)
 
 	if !strings.HasPrefix(m.Content, "!") {
