@@ -1,13 +1,13 @@
 package web
 
 import (
+	v1 "AstralBot/web/api/v1"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func initializeRoutes() {
-
 	// определение роута главной страницы
 	router.GET("/", func(c *gin.Context) {
 
@@ -24,4 +24,11 @@ func initializeRoutes() {
 		)
 
 	})
+
+	// определение роутера для api запросов
+	apiGroup := router.Group("/api")
+	{
+		// регистрация роутера для версии 1
+		v1.Register(apiGroup)
+	}
 }
