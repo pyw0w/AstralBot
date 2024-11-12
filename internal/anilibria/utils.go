@@ -1,15 +1,16 @@
 package anilibria
 
 import (
+	"AstralBot/internal/httpclient"
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-func GetTitle(params map[string]string) (string, error) {
-	client := &http.Client{}
+func fetchData(url string, params map[string]string) (string, error) {
+	client := httpclient.NewClient()
 
-	req, err := http.NewRequest("GET", "https://api.anilibria.tv/v3/title", nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return "", fmt.Errorf("ошибка создания запроса: %w", err)
 	}

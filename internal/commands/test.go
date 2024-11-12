@@ -2,7 +2,8 @@ package commands
 
 import (
 	"AstralBot/internal/anilibria"
-	"fmt"
+	"AstralBot/internal/anilibria/structs"
+	"encoding/json"
 )
 
 func RegisterTestCommand(cmdHandler *CommandHandler) {
@@ -14,8 +15,17 @@ func RegisterTestCommand(cmdHandler *CommandHandler) {
 				return "❌", nil
 			}
 
-			fmt.Print(anilibria.GetTitle(map[string]string{"id": args[0]}))
-			return "Test!" + args[0], nil
+			titleData, err := anilibria.GetTitle(map[string]string{"id": args[0]})
+			if err != nil {
+				return "Ошибка получения данных: " + err.Error(), nil
+			}
+
+			var title structs.Title
+			if err := json.Unmarshal([]byte(titleData), &title); err != nil {
+				return "Ошибка декодирования данных: " + err.Error(), nil
+			}
+
+			return "Название тайтла: " + title.Names.Ru, nil
 		},
 	}
 

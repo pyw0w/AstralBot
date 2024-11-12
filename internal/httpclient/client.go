@@ -42,3 +42,7 @@ func (c *Client) Post(url string, data interface{}) (*http.Response, error) {
 	}
 	return resp, nil
 }
+
+func (c *Client) Do(req *http.Request) (*http.Response, error) {
+	return c.httpClient.Do(req)
+}
