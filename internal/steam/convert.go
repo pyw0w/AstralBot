@@ -1,8 +1,8 @@
 package steam
 
 import (
-	"AstralBot/config"
 	"AstralBot/internal/httpclient"
+	"AstralBot/utils/config"
 	"encoding/json"
 	"fmt"
 	"net/http"

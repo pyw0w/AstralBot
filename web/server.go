@@ -1,9 +1,9 @@
 package web
 
 import (
-	"AstralBot/config"
 	_ "AstralBot/docs" // Этот импорт нужен для генерации документации
 	"AstralBot/internal/logger"
+	"AstralBot/utils/config"
 	"fmt"
 
 	"github.com/gin-contrib/gzip"

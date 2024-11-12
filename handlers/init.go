@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	"AstralBot/config"
 	"AstralBot/handlers/discord"
 	"AstralBot/handlers/telegram"
 	"AstralBot/internal/commands"
 	"AstralBot/internal/database"
 	"AstralBot/internal/database/models"
 	"AstralBot/internal/logger"
+	"AstralBot/utils/config"
 	"AstralBot/web"
 	"os"
 

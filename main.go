@@ -1,10 +1,10 @@
 package main
 
 import (
-	"AstralBot/config"
 	"AstralBot/handlers"
 	"AstralBot/internal/logger"
 	"AstralBot/utils"
+	"AstralBot/utils/config"
 )
 
 func main() {
