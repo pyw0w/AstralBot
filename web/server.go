@@ -31,15 +31,16 @@ func NewServer(cfg *config.Config, logger *logger.Logger) *Server {
 }
 
 func (s *Server) Start() {
-	r := gin.Default()
+	// Создаем новый роутер
+	r := gin.New()
 
-	// Обслуживание статических файлов из каталога www
+	// Serve static files from the www directory
 	r.Static("/static", "./www")
 
-	// Загрузка шаблонов из каталога templates
+	// Load templates from the templates directory
 	r.LoadHTMLGlob("www/templates/*")
 
-	// Регистрация маршрута для главной страницы
+	// Register route for the main page
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(200, "base.html", gin.H{
 			"Title":   "Astral Bot",
@@ -47,12 +48,12 @@ func (s *Server) Start() {
 		})
 	})
 
-	// Регистрация API эндпоинтов
+	// Register API endpoints
 	r.GET("/api/hello", func(c *gin.Context) {
 		api.HelloHandler(c.Writer, c.Request)
 	})
 
-	// Регистрация Swagger
+	// Register Swagger
 	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 

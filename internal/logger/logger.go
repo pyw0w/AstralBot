@@ -17,9 +17,9 @@ const (
 )
 
 type Logger struct {
-	debug *log.Logger
-	info  *log.Logger
-	error *log.Logger
+	infoLogger  *log.Logger
+	errorLogger *log.Logger
+	debugLogger *log.Logger
 }
 
 type LoggerAdapter struct {
@@ -51,24 +51,28 @@ func NewLogger(debugMode bool) *Logger {
 	}
 
 	logger := &Logger{
-		debug: log.New(debugOutput, Blue+"DEBUG: "+Reset, log.Ldate|log.Ltime),
-		info:  log.New(os.Stdout, Green+"INFO: "+Reset, log.Ldate|log.Ltime),
-		error: log.New(os.Stderr, Red+"ERROR: "+Reset, log.Ldate|log.Ltime),
+		debugLogger: log.New(debugOutput, Blue+"DEBUG: "+Reset, log.Ldate|log.Ltime),
+		infoLogger:  log.New(os.Stdout, Green+"INFO: "+Reset, log.Ldate|log.Ltime|log.Lshortfile),
+		errorLogger: log.New(os.Stderr, Red+"ERROR: "+Reset, log.Ldate|log.Ltime|log.Lshortfile),
 	}
 
 	return logger
 }
 
 func (l *Logger) Debug(source, message string) {
-	l.debug.Printf("[%s] %s", source, message)
+	l.debugLogger.Printf("[%s] %s", source, message)
 }
 
 func (l *Logger) Info(source string, v ...interface{}) {
 	msg := fmt.Sprintf("[%s] %s", source, fmt.Sprint(v...))
-	l.info.Println(msg)
+	l.infoLogger.Println(msg)
 }
 
 func (l *Logger) Error(source string, v ...interface{}) {
 	msg := fmt.Sprintf("[%s] %s", source, fmt.Sprint(v...))
-	l.error.Println(msg)
+	l.errorLogger.Println(msg)
+}
+
+func (l *Logger) Writer() io.Writer {
+	return l.infoLogger.Writer()
 }
