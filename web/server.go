@@ -3,13 +3,10 @@ package web
 import (
 	"AstralBot/config"
 	_ "AstralBot/docs" // Этот импорт нужен для генерации документации
-	"AstralBot/internal/api"
 	"AstralBot/internal/logger"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -30,36 +27,25 @@ func NewServer(cfg *config.Config, logger *logger.Logger) *Server {
 	}
 }
 
+var router *gin.Engine
+
 func (s *Server) Start() {
 	// Создаем новый роутер
-	r := gin.New()
+	router = gin.Default()
 
-	// Serve static files from the www directory
-	r.Static("/static", "./www")
+	// Process the templates at the start so that they don't have to be loaded
+	// from the disk again. This makes serving HTML pages very fast.
+	router.LoadHTMLGlob("web/templates/*")
 
-	// Load templates from the templates directory
-	r.LoadHTMLGlob("www/templates/*")
+	// Define the route for the index page and display the index.html template
+	// To start with, we'll use an inline route handler. Later on, we'll create
+	// standalone functions that will be used as route handlers.
+	initializeRoutes()
 
-	// Register route for the main page
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(200, "base.html", gin.H{
-			"Title":   "Astral Bot",
-			"Content": "index.html",
-		})
-	})
-
-	// Register API endpoints
-	r.GET("/api/hello", func(c *gin.Context) {
-		api.HelloHandler(c.Writer, c.Request)
-	})
-
-	// Register Swagger
-	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
-
+	// Запускаем сервер
 	addr := fmt.Sprintf(":%d", s.config.WebPort)
 	s.logger.Info("AstralWeb", fmt.Sprintf("Starting web server on %s", addr))
-	if err := r.Run(addr); err != nil {
+	if err := router.Run(addr); err != nil {
 		s.logger.Error("Could not start web server: %v", err)
 	}
 }
