@@ -17,6 +17,8 @@ type Config struct {
 	WebPort            int
 	DBType             string // Тип базы данных (например, "mongodb", "sqlite", "mysql")
 	DBConnectionString string // Строка подключения к базе данных
+	DiscordChannelID   string
+	AccessToken        string
 }
 
 func LoadConfig() *Config {
@@ -35,5 +37,7 @@ func LoadConfig() *Config {
 		WebPort:            8080,
 		DBType:             os.Getenv("DB_TYPE"),
 		DBConnectionString: os.Getenv("DB_CONNECTION_STRING"),
+		DiscordChannelID:   os.Getenv("DISCORD_CHANNEL_ID"),
+		AccessToken:        os.Getenv("ACCESS_TOKEN"),
 	}
 }
