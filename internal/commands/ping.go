@@ -4,19 +4,23 @@ import (
 	"time"
 )
 
-func RegisterPingCommand(cmdHandler *CommandHandler) {
-	cmd := Command{
-		Name:        "ping",
-		Description: "Проверка работоспособности бота",
-		Execute: func(args []string) (string, error) {
-			startTime := time.Now()
-			// Здесь можно добавить логику проверки работоспособности бота
-			time.Sleep(1 * time.Millisecond) // Задержка для имитации проверки
-			duration := time.Since(startTime)
-			return "Pong! Время выполнения: " + duration.String(), nil
-		},
-	}
+type PingCommand struct{}
 
-	// Регистрация команды
-	cmdHandler.RegisterCommand(cmd)
+func (c *PingCommand) Name() string {
+	return "ping"
+}
+
+func (c *PingCommand) Description() string {
+	return "Проверка работоспособности бота"
+}
+
+func (c *PingCommand) Execute(args []string) (string, error) {
+	startTime := time.Now()
+	time.Sleep(1 * time.Millisecond) // Задержка для имитации проверки
+	duration := time.Since(startTime)
+	return "Pong! Время выполнения: " + duration.String(), nil
+}
+
+func RegisterPingCommand(cmdHandler *CommandHandler) {
+	cmdHandler.RegisterCommand(&PingCommand{})
 }

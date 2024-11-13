@@ -16,7 +16,7 @@ import (
 
 func InitializeCommandHandler(log *logger.Logger, debugMode bool) *commands.CommandHandler {
 	cmdHandler := commands.NewCommandHandler()
-	commands.RegisterCommands(cmdHandler, log, debugMode)
+	commands.RegisterCommands(cmdHandler)
 	return cmdHandler
 }
 
