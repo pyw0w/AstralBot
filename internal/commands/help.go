@@ -12,17 +12,20 @@ func (c *HelpCmd) Description() string {
 	return "Показать доступные команды"
 }
 
+func (c *HelpCmd) generateCommandsList() []Field {
+	var fields []Field
+	for _, cmd := range c.cmdHandler.Commands {
+		fields = append(fields, Field{Name: cmd.Name(), Value: cmd.Description()})
+	}
+	return fields
+}
+
 func (c *HelpCmd) Execute(args []string) (interface{}, error) {
 	embed := Embed{
 		Title:       "Доступные команды",
 		Description: "Список всех доступных команд:",
 		Color:       65280,
-		Fields: []Field{
-			{Name: "test", Value: "Команда для проверки возможности получения данных с Anilibria"},
-			{Name: "ping", Value: "Проверка работоспособности бота"},
-			{Name: "help", Value: "Показать доступные команды"},
-			{Name: "steam", Value: "Получить информацию о профиле Steam"},
-		},
+		Fields:      c.generateCommandsList(),
 	}
 	return embed, nil
 }
