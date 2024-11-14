@@ -38,7 +38,7 @@ func (h *CommandHandler) ExecuteCommand(name string, args []string) (interface{}
 			return nil, err
 		}
 		if embed, ok := result.(Embed); ok {
-			return embed, nil
+			return &embed, nil
 		}
 		return result, nil
 	}
