@@ -1,17 +1,5 @@
 package commands
 
-type Embed struct {
-	Title       string
-	Description string
-	Color       int
-	Fields      []Field
-}
-
-type Field struct {
-	Name  string
-	Value string
-}
-
 type HelpCmd struct {
 	cmdHandler *CommandHandler
 }
