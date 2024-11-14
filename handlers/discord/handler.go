@@ -116,5 +116,10 @@ func (h *Handler) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate
 	args = args[1:]
 
 	response, _ := h.CommandHandler.ExecuteCommand(cmd, args)
-	s.ChannelMessageSend(m.ChannelID, response)
+	if strResponse, ok := response.(string); ok {
+		s.ChannelMessageSend(m.ChannelID, strResponse)
+	} else {
+		s.ChannelMessageSendEmbed(m.ChannelID, response.(*commands.Embed).ToDiscordEmbed())
+		h.Logger.Error("Discord", "Command response is not a string")
+	}
 }

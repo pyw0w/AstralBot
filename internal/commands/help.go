@@ -1,29 +1,44 @@
 package commands
 
-import (
-	"strings"
-)
+type Embed struct {
+	Title       string
+	Description string
+	Color       int
+	Fields      []Field
+}
 
-type HelpCommand struct {
+type Field struct {
+	Name  string
+	Value string
+}
+
+type HelpCmd struct {
 	cmdHandler *CommandHandler
 }
 
-func (c *HelpCommand) Name() string {
+func (c *HelpCmd) Name() string {
 	return "help"
 }
 
-func (c *HelpCommand) Description() string {
+func (c *HelpCmd) Description() string {
 	return "Показать доступные команды"
 }
 
-func (c *HelpCommand) Execute(args []string) (string, error) {
-	var availableCommands []string
-	for _, command := range c.cmdHandler.Commands {
-		availableCommands = append(availableCommands, command.Name()+": "+command.Description())
+func (c *HelpCmd) Execute(args []string) (interface{}, error) {
+	embed := Embed{
+		Title:       "Доступные команды",
+		Description: "Список всех доступных команд:",
+		Color:       65280,
+		Fields: []Field{
+			{Name: "test", Value: "Команда для проверки возможности получения данных с Anilibria"},
+			{Name: "ping", Value: "Проверка работоспособности бота"},
+			{Name: "help", Value: "Показать доступные команды"},
+			{Name: "steam", Value: "Получить информацию о профиле Steam"},
+		},
 	}
-	return "Доступные команды:\n" + strings.Join(availableCommands, "\n"), nil
+	return embed, nil
 }
 
 func RegisterHelpCommand(cmdHandler *CommandHandler) {
-	cmdHandler.RegisterCommand(&HelpCommand{cmdHandler: cmdHandler})
+	cmdHandler.RegisterCommand(&HelpCmd{cmdHandler: cmdHandler})
 }

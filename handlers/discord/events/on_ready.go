@@ -23,6 +23,6 @@ func OnReady(s *discordgo.Session, r *discordgo.Ready) {
 	}
 
 	// Update the status with the number of unique users
-	status := fmt.Sprintf("🤖 Commands: %d | Uptime: %s", commandCount, time.Since(startTime).String())
+	status := fmt.Sprintf("🤖 Commands: %d | 🤖 Uptime: %s", commandCount, time.Since(startTime).String())
 	s.UpdateCustomStatus(status)
 }

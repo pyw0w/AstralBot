@@ -16,7 +16,7 @@ func (c *SteamInfoCommand) Description() string {
 	return "Получить информацию о профиле Steam"
 }
 
-func (c *SteamInfoCommand) Execute(args []string) (string, error) {
+func (c *SteamInfoCommand) Execute(args []string) (interface{}, error) {
 	if len(args) < 1 {
 		return "❌ Пожалуйста, укажите Steam ID или URL профиля.", nil
 	}

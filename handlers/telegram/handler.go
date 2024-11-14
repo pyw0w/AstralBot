@@ -75,6 +75,11 @@ func (h *Handler) handleCommand(update tgbotapi.Update) {
 	args := strings.Split(update.Message.Text, " ")[1:]
 
 	response, _ := h.commandHandler.ExecuteCommand(cmd, args)
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, response)
+	responseStr, ok := response.(string)
+	if !ok {
+		h.logger.Error("Telegram", "Failed to assert response to string")
+		return
+	}
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, responseStr)
 	h.bot.Send(msg)
 }

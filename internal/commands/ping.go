@@ -14,7 +14,7 @@ func (c *PingCommand) Description() string {
 	return "Проверка работоспособности бота"
 }
 
-func (c *PingCommand) Execute(args []string) (string, error) {
+func (c *PingCommand) Execute(args []string) (interface{}, error) {
 	startTime := time.Now()
 	time.Sleep(1 * time.Millisecond) // Задержка для имитации проверки
 	duration := time.Since(startTime)

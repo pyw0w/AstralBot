@@ -16,7 +16,7 @@ func (c *TestCommand) Description() string {
 	return "Команда для проверки возможности получения данных с Anilibria"
 }
 
-func (c *TestCommand) Execute(args []string) (string, error) {
+func (c *TestCommand) Execute(args []string) (interface{}, error) {
 	if len(args) < 1 {
 		titleData, err := anilibria.GetTitleRandom()
 		if err != nil {
