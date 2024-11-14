@@ -5,4 +5,5 @@ func RegisterCommands(cmdHandler *CommandHandler) {
 	RegisterHelpCommand(cmdHandler)
 	RegisterSteamInfoCommand(cmdHandler)
 	RegisterTestCommand(cmdHandler)
+	RegisterCoinFlipCommand(cmdHandler)
 }
