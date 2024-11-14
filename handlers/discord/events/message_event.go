@@ -18,5 +18,8 @@ func LogMessage(s *discordgo.Session, m *discordgo.MessageCreate, l *logger.Logg
 		Username: m.Author.Username,
 		Content:  m.Content,
 	}
-	l.Info("Discord-Event", "Команда: "+event.Content+" | "+event.Username)
+	if m.Author.Bot {
+		return
+	}
+	l.Info("Discord-Event", "Сообщение: "+event.Content+" | "+event.Username)
 }
