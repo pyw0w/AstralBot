@@ -7,6 +7,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/bwmarrin/discordgo"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -75,11 +76,19 @@ func (h *Handler) handleCommand(update tgbotapi.Update) {
 	args := strings.Split(update.Message.Text, " ")[1:]
 
 	response, _ := h.commandHandler.ExecuteCommand(cmd, args)
-	responseStr, ok := response.(string)
-	if !ok {
-		h.logger.Error("Telegram", "Failed to assert response to string")
-		return
+	switch resp := response.(type) {
+	case string:
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, resp)
+		h.bot.Send(msg)
+	case *discordgo.MessageEmbed:
+		var messageText strings.Builder
+		messageText.WriteString(resp.Description + "\n\n")
+		for _, field := range resp.Fields {
+			messageText.WriteString(field.Name + ": " + field.Value + "\n")
+		}
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, messageText.String())
+		h.bot.Send(msg)
+	default:
+		h.logger.Error("Telegram", "Failed to assert response to known type")
 	}
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, responseStr)
-	h.bot.Send(msg)
 }
