@@ -1,4 +1,4 @@
-package commands
+package cmd
 
 type Embed struct {
 	Title       string

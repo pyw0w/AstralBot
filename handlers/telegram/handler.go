@@ -2,7 +2,7 @@ package telegram
 
 import (
 	"AstralBot/handlers/telegram/events"
-	"AstralBot/internal/commands"
+	"AstralBot/internal/cmd"
 	"AstralBot/internal/logger"
 	"log"
 	"strings"
@@ -12,12 +12,12 @@ import (
 
 type Handler struct {
 	bot            *tgbotapi.BotAPI
-	commandHandler *commands.CommandHandler
+	commandHandler *cmd.CommandHandler
 	debug          bool
 	logger         *logger.Logger
 }
 
-func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, logger *logger.Logger) (*Handler, error) {
+func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger *logger.Logger) (*Handler, error) {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		return nil, err

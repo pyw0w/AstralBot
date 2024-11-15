@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"AstralBot/handlers/discord/events"
-	"AstralBot/internal/commands"
+	"AstralBot/internal/cmd"
 	"AstralBot/internal/logger"
 
 	"github.com/bwmarrin/discordgo"
@@ -14,12 +14,12 @@ import (
 
 type Handler struct {
 	Session        *discordgo.Session
-	CommandHandler *commands.CommandHandler
+	CommandHandler *cmd.CommandHandler
 	Debug          bool
 	Logger         *logger.Logger
 }
 
-func NewHandler(token string, cmdHandler *commands.CommandHandler, debug bool, logger *logger.Logger, detailedLogs bool) (*Handler, error) {
+func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger *logger.Logger, detailedLogs bool) (*Handler, error) {
 	// Перехватываем логи библиотеки до создания сессии
 	discordgo.Logger = func(msgL, caller int, format string, a ...interface{}) {
 		if !detailedLogs {
@@ -102,23 +102,12 @@ func (h *Handler) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate
 		return
 	}
 
-	// Логируем сообщение
-	events.LogMessage(s, m, h.Logger)
-	events.OnReady(s, &s.State.Ready)
-
 	if !strings.HasPrefix(m.Content, "!") {
 		return
 	}
 
-	content := strings.TrimPrefix(m.Content, "!")
-	args := strings.Split(content, " ")
-	cmd := args[0]
-	args = args[1:]
-
-	response, _ := h.CommandHandler.ExecuteCommand(cmd, args)
-	if strResponse, ok := response.(string); ok {
-		s.ChannelMessageSend(m.ChannelID, strResponse)
-	} else {
-		s.ChannelMessageSendEmbed(m.ChannelID, response.(*commands.Embed).ToDiscordEmbed())
-	}
+	// Логируем сообщение
+	events.LogMessage(s, m, h.Logger)
+	events.OnReady(s, &s.State.Ready)
+	h.CommandHandler.ExecuteDiscordCommand(s, m)
 }
