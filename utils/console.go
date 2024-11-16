@@ -13,7 +13,9 @@ func WaitForShutdown(discordHandler *discord.Handler, log *logger.Logger) {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
 	<-sc
-	discordHandler.Close()
+	if discordHandler != nil {
+		discordHandler.Close()
+	}
 	log.Info("AstralBot", "Завершение работы бота...")
 }
 

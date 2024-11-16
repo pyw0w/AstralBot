@@ -1,57 +1,55 @@
 package web
 
 import (
-	_ "AstralBot/docs" // Этот импорт нужен для генерации документации
-	"AstralBot/internal/logger"
+	log "AstralBot/internal/logger"
 	"AstralBot/utils/config"
-	"fmt"
+	"strings"
+	"text/template"
 
-	"github.com/gin-contrib/gzip"
-	"github.com/gin-gonic/gin"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/middleware/logger"
 )
 
-type Server struct {
-	config *config.Config
-	logger *logger.Logger
-}
-
-// @title Astral Bot API
-// @version 1.0
-// @description This is the API documentation for Astral Bot.
-// @host localhost:8080
-// @BasePath /
-
-func NewServer(cfg *config.Config, logger *logger.Logger) *Server {
+func NewServer(cfg *config.Config, log *log.Logger) *Server {
 	return &Server{
 		config: cfg,
-		logger: logger,
+		logger: log,
 	}
 }
 
-var router *gin.Engine
-
 func (s *Server) Start() {
-	// Set the Gin mode to release
-	if s.config.DebugMode {
-		gin.SetMode(gin.ReleaseMode)
+	// Create a new Iris application
+	app := iris.New()
+
+	// Add logger middleware
+	app.Use(logger.New(
+		logger.Config{
+			Status: true,
+			IP:     true,
+			Method: true,
+		},
+	))
+
+	// I18n support
+	app.I18n.Loader.Funcs = func(current iris.Locale) template.FuncMap {
+		return template.FuncMap{
+			"uppercase": func(word string) string {
+				return strings.ToUpper(word)
+			},
+		}
 	}
-	// Создаем новый роутер
-	router = gin.New()
-	router.Use(gzip.Gzip(gzip.BestSpeed))
 
-	// Process the templates at the start so that they don't have to be loaded
-	// from the disk again. This makes serving HTML pages very fast.
-	router.LoadHTMLGlob("internal/web/templates/*")
-
-	// Define the route for the index page and display the index.html template
-	// To start with, we'll use an inline route handler. Later on, we'll create
-	// standalone functions that will be used as route handlers.
-	initializeRoutes()
-
-	// Запускаем сервер
-	addr := fmt.Sprintf(":%d", s.config.WebPort)
-	s.logger.Info("AstralWeb", fmt.Sprintf("Starting web server on %s", addr))
-	if err := router.Run(addr); err != nil {
-		s.logger.Error("Could not start web server: %v", err)
+	err := app.I18n.Load("./internal/web/locales/*/*.ini", "en-US", "el-GR")
+	if err != nil {
+		panic(err)
 	}
+
+	// Register the view engine
+	app.RegisterView(iris.HTML("./internal/web/templates", ".html"))
+
+	// Register the routes
+	initializeRoutes(app)
+
+	// Start the server on port 8080
+	app.Listen(":8080")
 }
