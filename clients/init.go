@@ -6,8 +6,8 @@ import (
 	"AstralBot/internal/cmd"
 	"AstralBot/internal/commands"
 	"AstralBot/internal/logger"
+	"AstralBot/internal/web"
 	"AstralBot/utils/config"
-	"AstralBot/web"
 
 	"os"
 )

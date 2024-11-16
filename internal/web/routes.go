@@ -1,7 +1,7 @@
 package web
 
 import (
-	v1 "AstralBot/web/api/v1"
+	v1 "AstralBot/internal/web/api/v1"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
