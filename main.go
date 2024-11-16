@@ -2,6 +2,7 @@ package main
 
 import (
 	"AstralBot/clients"
+	"AstralBot/internal"
 	"AstralBot/internal/logger"
 	"AstralBot/utils"
 	"AstralBot/utils/config"
@@ -12,6 +13,7 @@ func main() {
 	log := logger.NewLogger(cfg.DebugMode)
 
 	//handlers.InitDB(cfg, log)
+	internal.CheckForNewVersion(log)
 	utils.SetConsoleTitle(log, cfg.DebugMode)
 	web := clients.InitializeWebServer(cfg, log)
 	cmdHandler := clients.InitializeCommandHandler(log, cfg.DebugMode)

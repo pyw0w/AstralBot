@@ -59,8 +59,14 @@ func NewLogger(debugMode bool) *Logger {
 	return logger
 }
 
-func (l *Logger) Debug(source, message string) {
-	l.debug.Printf("[%s] %s", source, message)
+func (l *Logger) Debug(source string, v ...interface{}) {
+	msg := fmt.Sprintf("[%s] %s", source, fmt.Sprint(v...))
+	l.debug.Println(msg)
+}
+
+func (l *Logger) Debugf(source, format string, v ...interface{}) {
+	msg := fmt.Sprintf("[%s] %s", source, fmt.Sprintf(format, v...))
+	l.debug.Println(msg)
 }
 
 func (l *Logger) Info(source string, v ...interface{}) {
@@ -68,7 +74,17 @@ func (l *Logger) Info(source string, v ...interface{}) {
 	l.info.Println(msg)
 }
 
+func (l *Logger) Infof(source, format string, v ...interface{}) {
+	msg := fmt.Sprintf("[%s] %s", source, fmt.Sprintf(format, v...))
+	l.info.Println(msg)
+}
+
 func (l *Logger) Error(source string, v ...interface{}) {
 	msg := fmt.Sprintf("[%s] %s", source, fmt.Sprint(v...))
+	l.error.Println(msg)
+}
+
+func (l *Logger) Errorf(source, format string, v ...interface{}) {
+	msg := fmt.Sprintf("[%s] %s", source, fmt.Sprintf(format, v...))
 	l.error.Println(msg)
 }
