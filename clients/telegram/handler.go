@@ -19,6 +19,7 @@ type Handler struct {
 	active         bool
 }
 
+// NewHandler создает новый экземпляр обработчика Telegram бота
 func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger *logger.Logger) (*Handler, error) {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
@@ -48,6 +49,7 @@ func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger
 	return handler, nil
 }
 
+// Start запускает обработчик команд
 func (h *Handler) Start() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
@@ -65,6 +67,7 @@ func (h *Handler) Start() {
 	}
 }
 
+// handleCommand обрабатывает команду
 func (h *Handler) handleCommand(update tgbotapi.Update) {
 	if update.Message.From.IsBot {
 		return
@@ -73,14 +76,17 @@ func (h *Handler) handleCommand(update tgbotapi.Update) {
 	// Логируем сообщение
 	events.LogMessage(update, h.logger)
 
-	cmd := update.Message.Command()
+	command := update.Message.Command()
 	args := strings.Split(update.Message.Text, " ")[1:]
 
-	response, _ := h.commandHandler.ExecuteCommand(cmd, args)
+	response, _ := h.commandHandler.ExecuteCommand(command, args)
 	switch resp := response.(type) {
 	case string:
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, resp)
-		h.bot.Send(msg)
+		_, err := h.bot.Send(msg)
+		if err != nil {
+			return
+		}
 	case *discordgo.MessageEmbed:
 		var messageText strings.Builder
 		messageText.WriteString(resp.Description + "\n\n")
@@ -88,7 +94,10 @@ func (h *Handler) handleCommand(update tgbotapi.Update) {
 			messageText.WriteString(field.Name + ": " + field.Value + "\n")
 		}
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, messageText.String())
-		h.bot.Send(msg)
+		_, err := h.bot.Send(msg)
+		if err != nil {
+			return
+		}
 	default:
 		h.logger.Error("Telegram", "Failed to assert response to known type")
 	}

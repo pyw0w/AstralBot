@@ -7,6 +7,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+// Status updates the bot's status every 15 seconds
 func Status(s *discordgo.Session) {
 	go func() {
 		for {
@@ -18,7 +19,10 @@ func Status(s *discordgo.Session) {
 			}
 
 			status := fmt.Sprintf("🤖 Commands: %d | 🤖 Uptime: %s", commandCount, time.Since(startTime).String())
-			s.UpdateCustomStatus(status)
+			err := s.UpdateCustomStatus(status)
+			if err != nil {
+				return
+			}
 
 			time.Sleep(15 * time.Second)
 		}

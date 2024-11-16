@@ -2,7 +2,6 @@ package utils
 
 import (
 	"AstralBot/clients/discord"
-	"AstralBot/internal"
 	"AstralBot/internal/logger"
 	"os"
 	"os/signal"
@@ -14,16 +13,11 @@ func WaitForShutdown(discordHandler *discord.Handler, log *logger.Logger) {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
 	<-sc
 	if discordHandler != nil {
-		discordHandler.Close()
+		err := discordHandler.Close()
+		if err != nil {
+			log.Error("Ошибка закрытия Discord клиента: %v\n", err)
+			return
+		}
 	}
 	log.Info("AstralBot", "Завершение работы бота...")
-}
-
-func SetConsoleTitle(log *logger.Logger, debugMode bool) {
-	err := SetTitle("AstralBot - Версия: " + internal.Version)
-	if err != nil {
-		log.Error("Ошибка установки заголовка: %v\n", err)
-	} else if debugMode {
-		log.Debug("AstralBot", "Заголовок успешно установлен")
-	}
 }

@@ -18,6 +18,7 @@ var (
 	commandCount int
 )
 
+// NewHandler создает новый обработчик Discord
 func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger *logger.Logger, detailedLogs bool) (*Handler, error) {
 	// Перехватываем логи библиотеки до создания сессии
 	discordgo.Logger = func(msgL, caller int, format string, a ...interface{}) {
@@ -61,6 +62,7 @@ func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger
 	return handler, nil
 }
 
+// RoundTrip перехватывает запросы к Discord API и логирует их
 func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	// Не логируем запросы если они не относятся к Discord API
 	if !strings.Contains(req.URL.Host, "discord.com") {
@@ -75,6 +77,7 @@ func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 	return t.underlying.RoundTrip(req)
 }
 
+// Start запускает обработчик Discord
 func (h *Handler) Start() error {
 	h.Session.AddHandler(h.HandleEvent)
 	err := h.Session.Open()
@@ -85,6 +88,7 @@ func (h *Handler) Start() error {
 	return nil
 }
 
+// HandleEvent обрабатывает события Discord
 func (h *Handler) HandleEvent(s *discordgo.Session, event interface{}) {
 	switch e := event.(type) {
 	case *discordgo.Ready:
@@ -108,11 +112,12 @@ func (h *Handler) HandleEvent(s *discordgo.Session, event interface{}) {
 	}
 }
 
-// Add external event handlers
+// AddEventHandler добавляет обработчик событий
 func (h *Handler) AddEventHandler(handler interface{}) {
 	h.Session.AddHandler(handler)
 }
 
+// Close закрывает сессию Discord
 func (h *Handler) Close() error {
 	return h.Session.Close()
 }

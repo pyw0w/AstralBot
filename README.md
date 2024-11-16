@@ -1,5 +1,8 @@
 # AstralBot
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/pyw0w/AstralBot)](https://goreportcard.com/report/github.com/pyw0w/AstralBot)
+[![GitHub license](https://img.shields.io/github/license/pyw0w/AstralBot)](
+
 ## Описание
 
 AstralBot - это многофункциональный бот, который поддерживает платформы Telegram и Discord. Он предоставляет различные команды для взаимодействия с пользователями, включая команды для проверки работоспособности, получения информации и другие полезные функции.
