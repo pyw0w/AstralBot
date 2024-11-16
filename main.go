@@ -1,7 +1,7 @@
 package main
 
 import (
-	"AstralBot/handlers"
+	"AstralBot/clients"
 	"AstralBot/internal/logger"
 	"AstralBot/utils"
 	"AstralBot/utils/config"
@@ -13,9 +13,9 @@ func main() {
 
 	//handlers.InitDB(cfg, log)
 	utils.SetConsoleTitle(log, cfg.DebugMode)
-	web := handlers.InitializeWebServer(cfg, log)
-	cmdHandler := handlers.InitializeCommandHandler(log, cfg.DebugMode)
-	tgHandler, discordHandler := handlers.InitializeHandlers(cfg, cmdHandler, log)
-	handlers.StartHandlers(tgHandler, discordHandler, web, log)
+	web := clients.InitializeWebServer(cfg, log)
+	cmdHandler := clients.InitializeCommandHandler(log, cfg.DebugMode)
+	tgHandler, discordHandler := clients.InitializeHandlers(cfg, cmdHandler, log)
+	clients.StartHandlers(tgHandler, discordHandler, web, log)
 	utils.WaitForShutdown(discordHandler, log)
 }

@@ -1,7 +1,7 @@
 package telegram
 
 import (
-	"AstralBot/handlers/telegram/events"
+	"AstralBot/clients/telegram/events"
 	"AstralBot/internal/cmd"
 	"AstralBot/internal/logger"
 	"log"
@@ -16,6 +16,7 @@ type Handler struct {
 	commandHandler *cmd.CommandHandler
 	debug          bool
 	logger         *logger.Logger
+	active         bool
 }
 
 func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger *logger.Logger) (*Handler, error) {

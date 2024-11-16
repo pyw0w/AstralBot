@@ -1,8 +1,8 @@
-package handlers
+package clients
 
 import (
-	"AstralBot/handlers/discord"
-	"AstralBot/handlers/telegram"
+	"AstralBot/clients/discord"
+	"AstralBot/clients/telegram"
 	"AstralBot/internal/cmd"
 	"AstralBot/internal/commands"
 	"AstralBot/internal/logger"

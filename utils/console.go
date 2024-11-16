@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"AstralBot/handlers/discord"
+	"AstralBot/clients/discord"
 	"AstralBot/internal"
 	"AstralBot/internal/logger"
 	"os"
@@ -13,11 +13,7 @@ func WaitForShutdown(discordHandler *discord.Handler, log *logger.Logger) {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
 	<-sc
-
-	if err := discordHandler.Session.Close(); err != nil {
-		log.Error("System", "Ошибка при отключении Discord:", err)
-	}
-
+	discordHandler.Close()
 	log.Info("AstralBot", "Завершение работы бота...")
 }
 

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"AstralBot/handlers/discord/events"
+	"AstralBot/clients/discord/events"
 	"AstralBot/internal/cmd"
 	"AstralBot/internal/logger"
 
@@ -17,6 +17,7 @@ type Handler struct {
 	CommandHandler *cmd.CommandHandler
 	Debug          bool
 	Logger         *logger.Logger
+	handlers       map[string]func(*discordgo.Session, interface{})
 }
 
 func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger *logger.Logger, detailedLogs bool) (*Handler, error) {
@@ -57,6 +58,7 @@ func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger
 		CommandHandler: cmdHandler,
 		Debug:          debug,
 		Logger:         logger,
+		handlers:       make(map[string]func(*discordgo.Session, interface{})),
 	}
 
 	return handler, nil
@@ -83,7 +85,7 @@ func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 }
 
 func (h *Handler) Start() error {
-	h.Session.AddHandler(h.messageCreate)
+	h.Session.AddHandler(h.handleEvent)
 
 	err := h.Session.Open()
 	if err != nil {
@@ -97,7 +99,16 @@ func (h *Handler) Start() error {
 	return nil
 }
 
-func (h *Handler) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (h *Handler) handleEvent(s *discordgo.Session, event interface{}) {
+	switch e := event.(type) {
+	case *discordgo.MessageCreate:
+		h.message(s, e)
+	case *discordgo.MessageReactionAdd:
+		h.reactionAdd(s, e)
+	}
+}
+
+func (h *Handler) message(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.Bot {
 		return
 	}
@@ -110,4 +121,18 @@ func (h *Handler) messageCreate(s *discordgo.Session, m *discordgo.MessageCreate
 	events.LogMessage(s, m, h.Logger)
 	events.OnReady(s, &s.State.Ready)
 	h.CommandHandler.ExecuteDiscordCommand(s, m)
+}
+
+func (h *Handler) reactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
+	if handler, exists := h.handlers["reactionAdd"]; exists {
+		handler(s, r)
+	}
+}
+
+func (h *Handler) AddHandler(eventType string, handler func(*discordgo.Session, interface{})) {
+	h.handlers[eventType] = handler
+}
+
+func (h *Handler) Close() error {
+	return h.Session.Close()
 }
