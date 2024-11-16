@@ -17,6 +17,14 @@ type Config struct {
 	WebPort          int
 	DiscordChannelID string
 	AccessToken      string
+
+	// Database
+	DBType     string
+	DBLogin    string
+	DBPassword string
+	DBHost     string
+	DBPort     string
+	DBName     string
 }
 
 func LoadConfig() *Config {
@@ -35,5 +43,11 @@ func LoadConfig() *Config {
 		WebPort:          8080,
 		DiscordChannelID: os.Getenv("DISCORD_CHANNEL_ID"),
 		AccessToken:      os.Getenv("ACCESS_TOKEN"),
+		DBType:           os.Getenv("DB_TYPE"),
+		DBLogin:          os.Getenv("DB_LOGIN"),
+		DBPassword:       os.Getenv("DB_PASSWORD"),
+		DBHost:           os.Getenv("DB_HOST"),
+		DBPort:           os.Getenv("DB_PORT"),
+		DBName:           os.Getenv("DB_NAME"),
 	}
 }

@@ -32,7 +32,7 @@ var router *gin.Engine
 
 func (s *Server) Start() {
 	// Set the Gin mode to release
-	if !s.config.DebugMode {
+	if s.config.DebugMode {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	// Создаем новый роутер
@@ -41,7 +41,7 @@ func (s *Server) Start() {
 
 	// Process the templates at the start so that they don't have to be loaded
 	// from the disk again. This makes serving HTML pages very fast.
-	router.LoadHTMLGlob("web/templates/*")
+	router.LoadHTMLGlob("internal/web/templates/*")
 
 	// Define the route for the index page and display the index.html template
 	// To start with, we'll use an inline route handler. Later on, we'll create
