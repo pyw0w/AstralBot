@@ -51,40 +51,6 @@ AstralBot - это многофункциональный бот, который
     COMMAND_PREFIX=!
     ```
 
-## Сборка
-
-### Для Windows
-
-Запустите:
-```bash
-.\scripts\build_windows.bat
-```
-
-### Для Linux/MacOS
-
-Запустите:
-```bash
-./scripts/build_all.sh
-```
-
-## Запуск
-
-### Для Windows
-
-Запустите:
-
-```bash
-./run.bat
-```
-
-### Для Linux/MacOS
-
-Запустите:
-
-```bash
-./run.sh
-```
-
 ## Примечания
 
 - Убедитесь, что у вас есть доступ к интернету для работы с внешними API.
