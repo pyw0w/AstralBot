@@ -45,25 +45,18 @@ func (c *CoinFlipCommand) ExecuteDiscord(s *discordgo.Session, m *discordgo.Mess
 	msg, _ := s.ChannelMessageSend(m.ChannelID, "Пользователь, подтвердите участие, нажав на реакцию ниже.")
 	s.MessageReactionAdd(m.ChannelID, msg.ID, "✅")
 	reactionMessageID = msg.ID
-
-	// Добавляем обработчик реакции
-	s.AddHandler(func(s *discordgo.Session, r discordgo.MessageReactionAdd) {
-		if r.UserID == s.State.User.ID {
-			return
-		}
+	s.AddHandler(func(r *discordgo.MessageReactionAdd) {
 		if r.MessageID == reactionMessageID {
-			if r.UserID != targetUserID {
-				s.MessageReactionRemove(r.ChannelID, r.MessageID, r.Emoji.Name, r.UserID)
-				return
-			}
-			if r.Emoji.Name == "✅" {
-				coinFlipCmd := &CoinFlipCommand{}
-				result := coinFlipCmd.flipCoin()
-				s.ChannelMessageSend(r.ChannelID, fmt.Sprintf("Результат: %s", result))
+			if r.UserID == targetUserID {
+				if r.Emoji.Name == "✅" {
+					result := c.flipCoin()
+					s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Результат: %s", result))
+					// Reset reactionMessageID after handling the event
+					reactionMessageID = ""
+				}
 			}
 		}
 	})
-
 }
 
 func (c *CoinFlipCommand) ExecuteTelegram(bot *tgbotapi.BotAPI, update tgbotapi.Update) {

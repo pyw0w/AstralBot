@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"AstralBot/clients/discord/events"
 	"AstralBot/internal/cmd"
@@ -12,13 +13,10 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-type Handler struct {
-	Session        *discordgo.Session
-	CommandHandler *cmd.CommandHandler
-	Debug          bool
-	Logger         *logger.Logger
-	handlers       map[string]func(*discordgo.Session, interface{})
-}
+var (
+	startTime    = time.Now()
+	commandCount int
+)
 
 func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger *logger.Logger, detailedLogs bool) (*Handler, error) {
 	// Перехватываем логи библиотеки до создания сессии
@@ -58,16 +56,9 @@ func NewHandler(token string, cmdHandler *cmd.CommandHandler, debug bool, logger
 		CommandHandler: cmdHandler,
 		Debug:          debug,
 		Logger:         logger,
-		handlers:       make(map[string]func(*discordgo.Session, interface{})),
 	}
 
 	return handler, nil
-}
-
-// Структура для перехвата HTTP запросов
-type loggingTransport struct {
-	underlying http.RoundTripper
-	logger     *logger.Logger
 }
 
 func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -85,52 +76,41 @@ func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 }
 
 func (h *Handler) Start() error {
-	h.Session.AddHandler(h.handleEvent)
-
+	h.Session.AddHandler(h.HandleEvent)
 	err := h.Session.Open()
 	if err != nil {
 		return err
 	}
 
-	if h.Debug {
-		h.Logger.Debug("Discord", "Бот инициализирован как: "+h.Session.State.User.Username)
-	}
-
 	return nil
 }
 
-func (h *Handler) handleEvent(s *discordgo.Session, event interface{}) {
+func (h *Handler) HandleEvent(s *discordgo.Session, event interface{}) {
 	switch e := event.(type) {
+	case *discordgo.Ready:
+		if h.Debug {
+			h.Logger.Debug("Discord", "Бот инициализирован как: "+e.User.Username)
+		}
+		// Update the status with the number of unique users
+		Status(s)
 	case *discordgo.MessageCreate:
-		h.message(s, e)
-	case *discordgo.MessageReactionAdd:
-		h.reactionAdd(s, e)
+		if e.Author.Bot {
+			return
+		}
+
+		if !strings.HasPrefix(e.Content, "!") {
+			return
+		}
+
+		// Логируем сообщение
+		events.LogMessage(s, e, h.Logger)
+		h.CommandHandler.ExecuteDiscordCommand(s, e)
 	}
 }
 
-func (h *Handler) message(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Author.Bot {
-		return
-	}
-
-	if !strings.HasPrefix(m.Content, "!") {
-		return
-	}
-
-	// Логируем сообщение
-	events.LogMessage(s, m, h.Logger)
-	events.OnReady(s, &s.State.Ready)
-	h.CommandHandler.ExecuteDiscordCommand(s, m)
-}
-
-func (h *Handler) reactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
-	if handler, exists := h.handlers["reactionAdd"]; exists {
-		handler(s, r)
-	}
-}
-
-func (h *Handler) AddHandler(eventType string, handler func(*discordgo.Session, interface{})) {
-	h.handlers[eventType] = handler
+// Add external event handlers
+func (h *Handler) AddEventHandler(handler interface{}) {
+	h.Session.AddHandler(handler)
 }
 
 func (h *Handler) Close() error {
