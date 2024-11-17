@@ -7,7 +7,6 @@ import (
 	"text/template"
 
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/middleware/logger"
 )
 
 func NewServer(cfg *config.Config, log *log.Logger) *Server {
@@ -22,13 +21,7 @@ func (s *Server) Start() {
 	app := iris.New()
 
 	// Add logger middleware
-	app.Use(logger.New(
-		logger.Config{
-			Status: true,
-			IP:     true,
-			Method: true,
-		},
-	))
+	app.Use()
 
 	// I18n support
 	app.I18n.Loader.Funcs = func(current iris.Locale) template.FuncMap {
