@@ -1,7 +1,7 @@
 # AstralBot
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/pyw0w/AstralBot)](https://goreportcard.com/report/github.com/pyw0w/AstralBot)
-[![GitHub license](https://img.shields.io/github/license/pyw0w/AstralBot)
+![Go Report Card](https://goreportcard.com/badge/github.com/pyw0w/AstralBot)
+![GitHub license](https://img.shields.io/github/license/pyw0w/AstralBot)
 
 ## Описание
 
