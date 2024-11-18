@@ -1,0 +1,36 @@
+# Бинарные файлы и исполняемые файлы
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/bin/
+
+# Файлы среды разработки
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Зависимости и кэш
+/vendor/
+/pkg/
+
+# Файлы логов
+*.log
+
+# Локальные конфигурационные файлы
+.env
+.env.local
+.env.*.local
+
+# Временные файлы
+tmp/
+temp/
+
+# Файлы покрытия тестами
+coverage.txt
+coverage.html
