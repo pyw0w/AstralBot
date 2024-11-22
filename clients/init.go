@@ -44,13 +44,19 @@ func InitializeWebServer(cfg *config.Config, log *logger.Logger) *web.Server {
 
 // StartHandlers запускает обработчики
 func StartHandlers(tgHandler *telegram.Handler, discordHandler *discord.Handler, webServer *web.Server, log *logger.Logger) {
-	go tgHandler.Start()
-	go func() {
-		err := discordHandler.Start()
-		if err != nil {
-			log.Error("AstralBot", "Ошибка запуска Discord: ", err)
-		}
-	}()
-	go webServer.Start()
-	log.Info("AstralBot", "Бот запущен. Нажмите Ctrl+C для завершения")
+	if tgHandler == nil {
+		log.Info("System", "Запуск Telegram отключен")
+	} else {
+		go tgHandler.Start()
+	}
+	if discordHandler == nil {
+		log.Info("System", "Запуск Discord отключен")
+	} else {
+		go discordHandler.Start()
+	}
+	if webServer == nil {
+		log.Info("System", "Запуск веб-сервера отключен")
+	} else {
+		go webServer.Start()
+	}
 }

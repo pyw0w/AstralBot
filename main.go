@@ -22,15 +22,14 @@ func main() {
 
 	internal.CheckForNewVersion(log)
 	web := clients.InitializeWebServer(cfg, log)
+	cmdHandler := clients.InitializeCommandHandler(log, cfg.DebugMode)
+	tgHandler, discordHandler := clients.InitializeHandlers(cfg, cmdHandler, log)
 
 	if *runWebOnly {
-		web.Start()
+		clients.StartHandlers(nil, nil, web, log)
 		utils.WaitForShutdown(nil, log)
 		return
 	}
-
-	cmdHandler := clients.InitializeCommandHandler(log, cfg.DebugMode)
-	tgHandler, discordHandler := clients.InitializeHandlers(cfg, cmdHandler, log)
 
 	if *runBotOnly {
 		clients.StartHandlers(tgHandler, discordHandler, nil, log)
@@ -40,7 +39,6 @@ func main() {
 
 	// If no arguments are provided, run everything
 	if !*runWebOnly && !*runBotOnly {
-		web.Start()
 		clients.StartHandlers(tgHandler, discordHandler, web, log)
 		utils.WaitForShutdown(nil, log)
 	}
