@@ -10,8 +10,9 @@ import (
 )
 
 func main() {
-	// Define a command-line flag
+	// Define command-line flags
 	runWebOnly := flag.Bool("web-only", false, "Run only the web server")
+	runBotOnly := flag.Bool("bot-only", false, "Run only the bot")
 	flag.Parse()
 
 	cfg := config.LoadConfig()
@@ -30,5 +31,17 @@ func main() {
 
 	cmdHandler := clients.InitializeCommandHandler(log, cfg.DebugMode)
 	tgHandler, discordHandler := clients.InitializeHandlers(cfg, cmdHandler, log)
-	clients.StartHandlers(tgHandler, discordHandler, web, log)
+
+	if *runBotOnly {
+		clients.StartHandlers(tgHandler, discordHandler, nil, log)
+		utils.WaitForShutdown(nil, log)
+		return
+	}
+
+	// If no arguments are provided, run everything
+	if !*runWebOnly && !*runBotOnly {
+		web.Start()
+		clients.StartHandlers(tgHandler, discordHandler, web, log)
+		utils.WaitForShutdown(nil, log)
+	}
 }

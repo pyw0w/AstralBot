@@ -34,3 +34,5 @@ temp/
 # Файлы покрытия тестами
 coverage.txt
 coverage.html
+
+config.yml
